@@ -89,4 +89,35 @@ public class Project {
     public void setClient(Client client) {
         this.client = client;
     }
+
+    public void setContent(Project project){
+        this.id = project.getId();
+        this.name = project.getName();
+        this.description = project.getDescription();
+        this.active = project.getActive();
+        this.client = project.getClient();
+    }
 }
+
+//    @Id
+//    @Column(name="id")
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
+//
+//    @Column(name="name")
+//    private String name;
+//
+//    @Column(name="description")
+//    private String description;
+//
+//    @CreationTimestamp
+//    @Column(name="date_created")
+//    private Date dateCreated;
+//
+//    @Column(name="active")
+//    private Boolean active;
+//
+//    @ManyToOne
+//    @JoinColumn(name="client_id", nullable=false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private Client client;

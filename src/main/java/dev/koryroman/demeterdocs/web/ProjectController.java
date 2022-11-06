@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class ProjectController {
@@ -58,6 +59,24 @@ public class ProjectController {
 
         return new ResponseEntity<>(project, HttpStatus.CREATED);
     }
+
+    @CrossOrigin
+    @PutMapping("/projects/put/{id}")
+    public ResponseEntity<Project> updateProject(@PathVariable("id") Long id, @RequestBody Project projectRequest) throws ProjectNotFoundException {
+        Project project = projectService.getOneProject(id);
+        project.setContent(projectRequest);
+        projectRepository.save(project);
+        return new ResponseEntity<>(project, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/projects/{id}")
+    public ResponseEntity<HttpStatus> deleteProject(@PathVariable("id") Long id) {
+        projectRepository.deleteById(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
 
     @ExceptionHandler(ClientNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
