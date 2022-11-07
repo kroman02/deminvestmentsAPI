@@ -2,7 +2,9 @@ package dev.koryroman.demeterdocs.web;
 
 
 import dev.koryroman.demeterdocs.data.Client;
+import dev.koryroman.demeterdocs.data.Project;
 import dev.koryroman.demeterdocs.exceptions.ClientNotFoundException;
+import dev.koryroman.demeterdocs.exceptions.ProjectNotFoundException;
 import dev.koryroman.demeterdocs.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,6 +49,15 @@ public class ClientController {
     public ResponseEntity<Client> addClient(@RequestBody Client requestClient){
         Client client = clientService.addClient(requestClient);
         return new ResponseEntity<>(client, HttpStatus.CREATED);
+    }
+
+    @CrossOrigin
+    @PutMapping("/clients/put/{id}")
+    public ResponseEntity<Client> updateClient(@PathVariable("id") Long id, @RequestBody Client clientRequest) throws ProjectNotFoundException, ClientNotFoundException {
+        Client client = clientService.getClientById(id);
+        client.setContent(clientRequest);
+        Client updatedClient = clientService.updateClient(client);
+        return new ResponseEntity<>(client, HttpStatus.OK);
     }
 
     @ExceptionHandler(ClientNotFoundException.class)

@@ -65,8 +65,8 @@ public class ProjectController {
     public ResponseEntity<Project> updateProject(@PathVariable("id") Long id, @RequestBody Project projectRequest) throws ProjectNotFoundException {
         Project project = projectService.getOneProject(id);
         project.setContent(projectRequest);
-        projectRepository.save(project);
-        return new ResponseEntity<>(project, HttpStatus.OK);
+        Project updatedProject = projectRepository.save(project);
+        return new ResponseEntity<>(updatedProject, HttpStatus.OK);
     }
 
     @DeleteMapping("/projects/{id}")

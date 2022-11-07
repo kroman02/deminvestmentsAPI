@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class ClientService {
 
-
+    @Autowired
     ClientRepository clientRepository;
 
     @Autowired
@@ -47,5 +47,9 @@ public class ClientService {
         return clientsFound;
 
 
+    }
+
+    public Client updateClient(Client client) {
+        return clientRepository.save(client);
     }
 }

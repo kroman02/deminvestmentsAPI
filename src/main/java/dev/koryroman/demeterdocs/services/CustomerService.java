@@ -54,12 +54,14 @@ public class CustomerService {
     }
 
     public Customer addCustomer(Long stateId, Long policyId, Customer customer) throws StateNotFoundException, ResourceNotFoundException {
-
         State state = stateService.getOneState(stateId);
-        MyPolicy policy = null;
+
         if(myPolicyService.policyExists(policyId)){
-            policy = myPolicyService.getOnePolicy(policyId);
+            MyPolicy policy = myPolicyService.getOnePolicy(policyId);
+            customer.setPolicy(policy);
         }
+        customer.setState(state);
+
         return customerRepository.save(customer);
     }
 }

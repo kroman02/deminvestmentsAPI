@@ -63,4 +63,13 @@ public class Client {
     public void setImage(String image) {
         this.image = image;
     }
+
+    public void setContent(Client client){
+        this.id = client.getId();
+        this.name = client.getName();
+        this.phone = client.getPhone();
+        this.email = client.getEmail();
+        this.image = client.getImage();
+    }
+
 }

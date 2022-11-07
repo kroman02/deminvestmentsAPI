@@ -2,6 +2,7 @@ package dev.koryroman.demeterdocs.data;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
@@ -31,8 +32,9 @@ public class Customer {
     @JoinColumn(name="state", nullable=false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private State state;
+
     @ManyToOne
-    @JoinColumn(name="policy_id", nullable=false)
+    @JoinColumn(name="policy_id", nullable=true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private MyPolicy policy;
     @ManyToOne

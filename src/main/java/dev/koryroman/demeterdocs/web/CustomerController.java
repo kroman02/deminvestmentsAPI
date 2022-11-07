@@ -3,6 +3,7 @@ package dev.koryroman.demeterdocs.web;
 import dev.koryroman.demeterdocs.data.*;
 import dev.koryroman.demeterdocs.data.repos.ClientRepository;
 import dev.koryroman.demeterdocs.exceptions.ClientNotFoundException;
+import dev.koryroman.demeterdocs.exceptions.ResourceNotFoundException;
 import dev.koryroman.demeterdocs.exceptions.StateNotFoundException;
 import dev.koryroman.demeterdocs.services.CustomerService;
 import dev.koryroman.demeterdocs.services.MyPolicyService;
@@ -53,19 +54,22 @@ public class CustomerController {
 
     }
 
-    @PostMapping("clients/{clientId}/state/{stateId}/policy/{policyId}customers")
+    @PostMapping("clients/{clientId}/{stateId}/{policyId}/customers")
     public ResponseEntity<Customer> createCustomer(@PathVariable(value="clientId") Long clientId,
                                                    @PathVariable(value="stateId") Long stateId,
                                                    @PathVariable(value="policyId") Long policyId,
                                                    @RequestBody Customer requestCustomer) throws ClientNotFoundException, StateNotFoundException {
 
-        State state = stateService.getOneState(stateId);
-        if()
+
         Customer customer = clientRepository.findById(clientId).map(client -> {
             requestCustomer.setClient(client);
-            requestCustomer.setState(requestState);
-            requestCustomer.setPolicy(requestPolicy);
-            return customerService.addCustomer(requestCustomer);
+            Customer finalCustomer = null;
+            try {
+                finalCustomer = customerService.addCustomer(stateId, policyId, requestCustomer);
+            } catch (StateNotFoundException | ResourceNotFoundException e) {
+                e.printStackTrace();
+            }
+            return finalCustomer;
         }).orElseThrow(() -> new ClientNotFoundException(clientId));
 
         return new ResponseEntity<>(customer, HttpStatus.CREATED);
