@@ -23,5 +23,9 @@ public class MyPolicyService {
         return policyRepository.findById(policyId).orElseThrow(() -> new ResourceNotFoundException(policyId));
     }
 
+    public boolean policyExists(Long policyId){
+        return policyRepository.existsById(policyId);
+    }
+
 
 }

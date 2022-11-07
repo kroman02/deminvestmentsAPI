@@ -1,27 +1,42 @@
 package dev.koryroman.demeterdocs.web;
 
-import dev.koryroman.demeterdocs.data.Client;
-import dev.koryroman.demeterdocs.data.Customer;
+import dev.koryroman.demeterdocs.data.*;
+import dev.koryroman.demeterdocs.data.repos.ClientRepository;
 import dev.koryroman.demeterdocs.exceptions.ClientNotFoundException;
+import dev.koryroman.demeterdocs.exceptions.StateNotFoundException;
 import dev.koryroman.demeterdocs.services.CustomerService;
+import dev.koryroman.demeterdocs.services.MyPolicyService;
+import dev.koryroman.demeterdocs.services.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class CustomerController {
 
     @Autowired
     CustomerService customerService;
+    @Autowired
+    ClientRepository clientRepository;
+    @Autowired
+    StateService stateService;
+    @Autowired
+    MyPolicyService myPolicyService;
 
     @GetMapping("/customers")
     public ResponseEntity<List<Customer>> getAllCustomers(){
         List<Customer> customers = customerService.getAllCustomers();
         return new ResponseEntity<>(customers, HttpStatus.OK);
+    }
+
+    @GetMapping("customers/{customerId}")
+    public ResponseEntity<Customer> getOneCustomer(@PathVariable(value="customerId") Long customerId){
+        Customer customer = customerService.getOneCustomer(customerId);
+        return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
     @GetMapping("/customers/byname")
@@ -35,11 +50,36 @@ public class CustomerController {
     public ResponseEntity<List<Customer>> getCustomersByClient(@PathVariable Long clientId) throws ClientNotFoundException {
         List<Customer> customers = customerService.getCustomersByClient(clientId);
         return new ResponseEntity<>(customers, HttpStatus.OK);
+
+    }
+
+    @PostMapping("clients/{clientId}/state/{stateId}/policy/{policyId}customers")
+    public ResponseEntity<Customer> createCustomer(@PathVariable(value="clientId") Long clientId,
+                                                   @PathVariable(value="stateId") Long stateId,
+                                                   @PathVariable(value="policyId") Long policyId,
+                                                   @RequestBody Customer requestCustomer) throws ClientNotFoundException, StateNotFoundException {
+
+        State state = stateService.getOneState(stateId);
+        if()
+        Customer customer = clientRepository.findById(clientId).map(client -> {
+            requestCustomer.setClient(client);
+            requestCustomer.setState(requestState);
+            requestCustomer.setPolicy(requestPolicy);
+            return customerService.addCustomer(requestCustomer);
+        }).orElseThrow(() -> new ClientNotFoundException(clientId));
+
+        return new ResponseEntity<>(customer, HttpStatus.CREATED);
     }
 
     @ExceptionHandler(ClientNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     String clientNotFoundHandler(ClientNotFoundException ex){
+        return ex.getMessage();
+    }
+
+    @ExceptionHandler(StateNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    String stateNotFoundHandler(StateNotFoundException ex){
         return ex.getMessage();
     }
 }
