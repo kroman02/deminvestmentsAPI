@@ -23,5 +23,9 @@ public class CarrierService {
         return carrierRepository.findById(carrierId).orElseThrow(() -> new CarrierNotFoundException(carrierId));
     }
 
+    public Carrier addCarrier(Carrier carrier){
+        return carrierRepository.save(carrier);
+    }
+
 
 }

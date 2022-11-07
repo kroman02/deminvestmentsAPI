@@ -1,6 +1,7 @@
 package dev.koryroman.demeterdocs.web;
 
 import dev.koryroman.demeterdocs.data.Carrier;
+import dev.koryroman.demeterdocs.data.Client;
 import dev.koryroman.demeterdocs.exceptions.CarrierNotFoundException;
 import dev.koryroman.demeterdocs.exceptions.ClientNotFoundException;
 import dev.koryroman.demeterdocs.services.CarrierService;
@@ -30,6 +31,12 @@ public class CarrierController {
     public ResponseEntity<Carrier> getOneCarrier(@PathVariable Long carrierId) throws CarrierNotFoundException {
         Carrier carrier = carrierService.getOneCarrier(carrierId);
         return new ResponseEntity<>(carrier, HttpStatus.OK);
+    }
+
+    @PostMapping("/carriers/add")
+    public ResponseEntity<Carrier> addClient(@RequestBody Carrier requestCarrier){
+        Carrier carrier= carrierService.addCarrier(requestCarrier);
+        return new ResponseEntity<>(carrier, HttpStatus.CREATED);
     }
 
     @ExceptionHandler(CarrierNotFoundException.class)
